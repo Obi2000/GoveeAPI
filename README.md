@@ -1,5 +1,5 @@
 # What this is.
-This a fork of the standard GoveeAPI for use with Govee Immersion H6199 RGB lighting strips. The H6199 unfortuately has a slightly different format.
+This a fork of the BLE GoveeAPI for use with Govee Immersion H6199 RGB lighting strips. The H6199 unfortunately has a slightly different format.
 I have also added support for H6199 specific features such as the video tracking mode.
 
 # Requirements
