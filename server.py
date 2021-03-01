@@ -10,7 +10,7 @@ console = pexpect.spawn("bash")
 def on():
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --mode on")
+        console.sendline("python3 tool.py --mode on")
         return "done"
     else:
         return "Empty request"
@@ -19,7 +19,7 @@ def on():
 def off():
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --mode off")
+        console.sendline("python3 tool.py --mode off")
         return "done"
     else:
         return "Empty request"
@@ -29,7 +29,7 @@ def off():
 def bright(bright):
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --brightness " + bright)
+        console.sendline("python3 tool.py --brightness " + bright)
         return "done"
     else:
         return "Empty request"
@@ -57,7 +57,7 @@ def alarm():
 def strobe():
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --mode strobe --period .3")
+        console.sendline("python3 tool.py --mode strobe --period .3")
         return "done"
     else:
         return "Bad request"
@@ -68,7 +68,7 @@ def strobe():
 def red():
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --color 255 0 0")
+        console.sendline("python3 tool.py --color 255 0 0")
         return "done"
     else:
         return "Empty request"
@@ -78,7 +78,7 @@ def red():
 def green():
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --color 0 255 0")
+        console.sendline("python3 tool.py --color 0 255 0")
         return "done"
     else:
         return "Empty request"
@@ -88,7 +88,7 @@ def green():
 def blue():
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --color 0 0 255")
+        console.sendline("python3 tool.py --color 0 0 255")
         return "done"
     else:
         return "Empty request"
@@ -98,7 +98,7 @@ def blue():
 def energic():
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --music Energic --color 0 0 0")
+        console.sendline("python3 tool.py --music Energic --color 0 0 0")
         return "done"
     else:
         return "Empty request"
@@ -108,7 +108,7 @@ def energic():
 def color(r,g,b):
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --color " + r + " " + g + " " + b)
+        console.sendline("python3 tool.py --color " + r + " " + g + " " + b)
         return "done"
     else:
         return "Empty request"
@@ -118,7 +118,7 @@ def color(r,g,b):
 def music(music_mode,r,g,b):
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --music " + music_mode + " --color " + r + " " + g + " " + b)
+        console.sendline("python3 tool.py --music " + music_mode + " --color " + r + " " + g + " " + b)
         return "done"
     else:
         return "Empty request"
@@ -128,12 +128,23 @@ def music(music_mode,r,g,b):
 def scene(scene_mode):
     args_dict = request.args.to_dict()
     if "key" in args_dict.keys() and args_dict["key"] == server_secret:
-        console.sendline("sudo python3 tool.py --scene " + scene_mode  )
+        console.sendline("python3 tool.py --scene " + scene_mode  )
         return "done"
     else:
         return "Empty request"
 
 
+#video
+@app.route('/video', methods=["GET"])
+def video():
+    args_dict = request.args.to_dict()
+    if "key" in args_dict.keys() and args_dict["key"] == server_secret:
+        console.sendline("python3 tool.py --video Part Game 10")
+        return "done"
+    else:
+        return "Empty request"
+
+	
 #############################################################################################################################################################################
 @app.route('/end_strobe')
 def end():
