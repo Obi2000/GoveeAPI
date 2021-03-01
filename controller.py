@@ -28,9 +28,10 @@ def get_off():
     return "".join(bins_str)
 
 def get_rgb_hex(r,g,b):
-    sig = (51) ^ (5) ^ (2) ^ r ^ g ^ b
-    #bins = [51, 5, 2, r, g, b, 0, 255, 174, 84, 0, 0, 0, 0, 0, 0, 0, 0, 0, sig]
-    bins = [51, 5, 2, r, g, b, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sig]
+    #sig = (51) ^ (5) ^ (0x0b) ^ r ^ g ^ b ^ (0xff)^ (0x7f)
+    bins = [51, 5, 0x0b, r, g, b, 0, 0, 0xff, 0x7f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    sig = checksum(bins)
+    bins[19] = sig
     bins_str = map(int_to_hex, bins)
     return "".join(bins_str)
 def get_brightness_hex(bright):
@@ -44,16 +45,34 @@ def get_music_mode(music,r,g,b):
         musicnum = 0
         r,g,b = 0, 0, 0
     elif music== "Spectrum":
-        musicnum = 1
+        musicnum = 3
     elif music== "Rolling":
         musicnum = 2
     else:
-        musicnum = 3
+        musicnum = 5
         r,g,b =0, 0, 0
-    sig = ((51)^(5)^(1)^musicnum^r^g^b)
-    bins = bins = [51, 5, 1, musicnum,0, r, g, b, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sig]
+    musicmode = 0
+    bins = [51, 5, 0x0c, musicnum,0x63, musicmode, r, g, b, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    sig = checksum(bins)
+    bins[19] = sig
     bins_str = map(int_to_hex, bins)
     return "".join(bins_str)
+
+def get_video_mode(area="Part",mode="Game",opSat=100):
+	opArea = 0x00
+	opMode = 0x01
+	
+	if area == "All":
+		opArea = 0x01
+	if mode == "Movie":
+		opMode = 0x00
+		
+	bins = [51, 5, 0x00, opArea, opMode, opSat,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	sig = checksum(bins)
+	bins[19] = sig
+	bins_str = map(int_to_hex, bins)
+	return "".join(bins_str)
+
 def get_scene(scene):
     if scene == "Sunrise":
         scenenum = 0
@@ -125,6 +144,21 @@ def change_scene(scene, addr):
     write_data(hexstr, addr)
     print(f"Changed {addr_dev_dict[addr]} Scene to {scene}")
 
+def change_video(video, addr):
+	print(video)
+	area=""
+	mode=""
+	sat="100"
+	numArgs = len(video)
+	if numArgs>0: area=video[0]
+	if numArgs>1: mode=video[1]
+	if numArgs>2: sat=video[2]
+	opSat = int(sat,0)
+	hexstr = get_video_mode(area,mode,opSat)
+	print(hexstr)
+	write_data(hexstr, addr)
+	print(f"Changed {addr_dev_dict[addr]} Video Mode to {video}")
+
 RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
@@ -146,3 +180,9 @@ def gen_rand_color():
     bp = round(b*factor)
     rgbt = (rp, gp, bp)
     return rgbt
+
+def checksum(data):
+	xor=0x00
+	for op in data:
+		xor^=op
+	return xor

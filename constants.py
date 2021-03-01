@@ -1,5 +1,5 @@
 # format- "device-name": "device-address"
-devices = {"led":"00:11:22:33:44:55"
+devices = {"led":"11:22:33:44:55:66"
 }
 device_modes = ['set','on','off','strobe','diy']
 device_names = list(devices.keys())

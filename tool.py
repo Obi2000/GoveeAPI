@@ -10,7 +10,7 @@ from constants import *
     of multiple devices, enter them all into the list.
     Include 'all' as a list of all of your device addresses as well.
 """
-name_addr_dict = {"led":"00:11:22:33:44:55"
+name_addr_dict = {"led":"11:22:33:44:55:66"
 }
 
 ps = argparse.ArgumentParser(description="Govee Home Control Script")
@@ -22,6 +22,7 @@ ps.add_argument('--color', nargs=3, type=int)
 ps.add_argument('--period', type=float)
 ps.add_argument('--music', type=str, choices=music_modes)
 ps.add_argument('--scene',type=str,choices=scene_modes)
+ps.add_argument('--video', nargs='*',help="--video {Part,All} {Game,Movie} Saturation")
 args = ps.parse_args()
 chosen_devices = [name_addr_dict[args.device]]
 
@@ -44,6 +45,10 @@ if args.mode == "set":
         scene = args.scene
         for device in chosen_devices:
             change_scene(scene,device)
+    if args.video is not None:
+        video = args.video
+        for device in chosen_devices:
+            change_video(video,device)
 elif args.mode == "on":
     for device in chosen_devices:
         turn_on(device)
