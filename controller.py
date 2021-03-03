@@ -16,6 +16,12 @@ def int_to_hex(intv):
     while len(h) < 2:
         h = "0" + h
     return h
+
+def hex_to_rgb(hex):
+	hex = hex.lstrip('#')
+	hlen = len(hex)
+	return tuple(int(hex[i:i + hlen // 3], 16) for i in range(0, hlen, hlen // 3))
+		
 def get_on():
     sig = (51 ^ 1 ^ 1)
     bins = [51, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sig]
@@ -26,6 +32,19 @@ def get_off():
     bins = [51, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sig]
     bins_str = map(int_to_hex, bins)
     return "".join(bins_str)
+
+def get_ct_hex(ct):
+	#find value in table containing 142 values (2000-9050)
+	if ct<2000: ct=2000
+	if ct>9050: ct=9050
+	CTidx=int((ct-2000)/50)
+	r, g, b = hex_to_rgb(CT_Table[CTidx])
+	CT1, CT2 = divmod(ct, 0x100)
+	bins = [51, 5, 0x0b, r, g, b, CT1, CT2, 0xff, 0x7f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	sig = checksum(bins)
+	bins[19] = sig
+	bins_str = map(int_to_hex, bins)
+	return "".join(bins_str)
 
 def get_rgb_hex(r,g,b):
     #sig = (51) ^ (5) ^ (0x0b) ^ r ^ g ^ b ^ (0xff)^ (0x7f)
@@ -123,6 +142,12 @@ def change_color(rgbt, addr):
     print(hexstr)
     write_data(hexstr, addr)
     print(f"Changed {addr_dev_dict[addr]} color to {rgbt}")
+	
+def change_ct(ct, addr):
+    hexstr = get_ct_hex(ct)
+    print(hexstr)
+    write_data(hexstr, addr)
+    print(f"Changed {addr_dev_dict[addr]} color temperature to {ct}")
 
 def change_brightness(bright, addr):
     hexstr = get_brightness_hex(bright)

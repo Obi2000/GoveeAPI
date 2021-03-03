@@ -34,6 +34,17 @@ def bright(bright):
     else:
         return "Empty request"
 
+
+#color temperature
+@app.route('/ct/<temp>', methods=["GET"])
+def ct(temp):
+    args_dict = request.args.to_dict()
+    if "key" in args_dict.keys() and args_dict["key"] == server_secret:
+        console.sendline("python3 tool.py --temp " + temp)
+        return "done"
+    else:
+        return "Empty request"
+		
 #########################################################################################################################################################
 @app.route('/alarm', methods=["POST", "GET"])
 def alarm():

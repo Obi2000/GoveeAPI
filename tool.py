@@ -18,6 +18,7 @@ device_choices = device_names.append("all")
 ps.add_argument('--mode', default="set", type=str, choices=device_modes)
 ps.add_argument('--device', default="led", type=str, choices=device_choices)
 ps.add_argument('--brightness', type=int)
+ps.add_argument('--temp', type=int)
 ps.add_argument('--color', nargs=3, type=int)
 ps.add_argument('--period', type=float)
 ps.add_argument('--music', type=str, choices=music_modes)
@@ -32,6 +33,10 @@ if args.mode == "set":
         bright = args.brightness
         for device in chosen_devices:
             change_brightness(bright, device)
+    if args.temp is not None:
+        ct = args.temp
+        for device in chosen_devices:
+            change_ct(ct, device)
     if args.color is not None and args.music is None:
         colort = tuple(args.color)
         for device in chosen_devices:
